@@ -1,0 +1,19 @@
+site_name: backtestd.py
+site_description: Python library to interact with backtestd REST API
+site_author: Stefan Lendl
+
+repo_url: https://github.com/stfl/backtestd.py
+edit_uri: https://github.com/stfl/backtestd.py/edit/master/docs
+
+theme: readthedocs
+
+markdown_extensions:
+  - codehilite
+
+nav:
+  - Home: index.md
+  - Advanced: advanced.md
+  - About:
+    - Release Notes: about/changelog.md
+    - Contributing: about/contributing.md
+    - License: about/license.md
