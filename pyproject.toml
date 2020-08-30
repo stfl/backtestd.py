@@ -23,15 +23,14 @@ classifiers = [
     "Operating System :: OS Independent",
     "Programming Language :: Python",
     "Programming Language :: Python :: 3",
-    "Programming Language :: Python :: 3.7",
+    "Programming Language :: Python :: 3.8",
 ]
 
 [tool.poetry.dependencies]
 
-python = "^3.7"
-
-# TODO: Remove these and add your library's requirements
+python = "^3.8"
 minilog = "^1.5"
+pandas = "^1.1.1"
 
 [tool.poetry.dev-dependencies]
 
