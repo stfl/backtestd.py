@@ -23,6 +23,12 @@ backtest_model = (
     'EveryTickReal'   # = 4, Every tick based on real ticks
 )
 
+store_results = (
+    'None',  # 0, // optimization disabled
+    'SideChanges',  # 1, // "Slow complete algorithm"
+    'Buffers',  # 2,     // "Fast genetic based algorithm"
+    'Results',  # 3,     // "All symbols selected in Market Watch"
+)
 
 signal_class = (
     'Preset',  # 0,

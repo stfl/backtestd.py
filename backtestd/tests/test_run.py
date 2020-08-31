@@ -1,25 +1,30 @@
 """Sample unit test module using pytest-describe and expecter."""
 # pylint: disable=redefined-outer-name,unused-variable,expression-not-assigned,singleton-comparison
+import pytest
 
 from backtestd.run import Run
-from backtestd.enums import backtest_model, optimize, optimize_crit
+from backtestd.enums import backtest_model, optimize, optimize_crit, store_results
 from datetime import datetime
+from backtestd.tests.test_indicator import test_indis as indis
 
 
 run_config = {'backtest_model': backtest_model.index('OpenPrice'),
               'date': [datetime(2018, 1, 1, 0, 0),
-                       datetime(2019, 12, 11, 0, 0)],
+                       datetime(2019, 1, 1, 0, 0)],
               'name': 'bt_run',
-              'optimize':      optimize.index('Genetic'),
-              'optimize_crit': optimize_crit.index('Balance'),
-              'symbols': ['EURUSD', 'AUDCAD', 'GBPUSD', 'USDCHF', 'USDJPY', 'USDCAD',
-                          'AUDUSD', 'EURCHF', 'EURJPY', 'EURGBP', 'EURCAD', 'GBPCHF',
-                          'GBPJPY', 'AUDJPY', 'AUDNZD', 'AUDCHF', 'CHFJPY', 'EURAUD',
-                          'EURNZD', 'CADCHF', 'GBPAUD', 'GBPCAD', 'GBPNZD', 'NZDCAD',
-                          'NZDCHF', 'NZDJPY', 'NZDUSD', 'CADJPY'],
-              'visual': False
+              'optimize':      optimize.index('Complete'),
+              'optimize_crit': optimize_crit.index('Custom'),
+              'symbols': ['EURUSD'],
+              'visual': False,
+              'store_results': store_results.index('None')
               }
 
+
+all_symbols = ['EURUSD', 'AUDCAD', 'GBPUSD', 'USDCHF', 'USDJPY', 'USDCAD',
+               'AUDUSD', 'EURCHF', 'EURJPY', 'EURGBP', 'EURCAD', 'GBPCHF',
+               'GBPJPY', 'AUDJPY', 'AUDNZD', 'AUDCHF', 'CHFJPY', 'EURAUD',
+               'EURNZD', 'CADCHF', 'GBPAUD', 'GBPCAD', 'GBPNZD', 'NZDCAD',
+               'NZDCHF', 'NZDJPY', 'NZDUSD', 'CADJPY'],
 
 # pub struct Indicator {
 #     pub name: String,
@@ -31,100 +36,6 @@ run_config = {'backtest_model': backtest_model.index('OpenPrice'),
 #     pub shift: u8,
 # }
 
-indis = {1: {'name': 'ALF2_baseline',
-             'inputs': [[0.0, 5.0, 19.0, 2.0],
-                        [10.0, 4.0, 24.0, 2.0],
-                        [0.5, 0.1, 1.5, 0.2],
-                        [0.0, 0.0, 21.0, 1.0]],
-             'shift': 0,
-             'buffers': [0],
-             'class': 'PriceCross',
-             'filename': 'Adaptive_Laguerre_filter_2',
-             },
-         2: {'name': 'Amka_baseline',
-             'inputs': [[9.0, 5.0, 15.0, 1.0],
-                        [2.0, 2.0, 8.0, 1.0],
-                        [30.0, 20.0, 40.0, 2.0],
-                        [2.0, 1.0, 3.0, 0.2]],
-             'shift': 0,
-             'buffers': [0],
-             'class': 'PriceCross',
-             'filename': 'amka-indicator',
-             },
-         3: {'name': 'Corr_avg_baseline',
-             'inputs': [[0.0, 5.0, 19.0, 2.0],
-                        [1.0, 0.0, 3.0, 1.0],
-                        [14.0, 6.0, 24.0, 2.0],
-                        [0.0, 0.0, 21.0, 1.0],
-                        [0.0, 0.0, 1.0, 0.1],
-                        [3.0],
-                        [25.0, 15.0, 35.0, 2.0],
-                        [90.0, 75.0, 95.0, 5.0],
-                        [10.0, 5.0, 25.0, 5.0]],
-             'shift': 0,
-             'buffers': [5],
-             'class': 'PriceCross',
-             'filename': 'Corr_average',
-             },
-         4: {'name': 'GMA',
-             'inputs': [[-1.0], [21.0, 9.0, 35.0, 2.0]],
-             'shift': 0,
-             'buffers': [1],
-             'class': 'PriceCross',
-             'filename': 'YGMA',
-             },
-         5: {'name': 'kijunsen',
-             'inputs': [[9.0], [26.0, 6.0, 60.0, 1.0], [52.0]],
-             'shift': 0,
-             'class': 'Preset',
-             },
-         6: {'name': 'ma',
-             'inputs': [[18.0, 40.0, 2.0], [0.0], [0.0, 3.0, 1.0], [0.0, 6.0, 1.0]],
-             'shift': 0,
-             'class': 'Preset',
-             },
-         7: {'name': 'Plombiers',
-             'inputs': [[145.0, 35.0, 200.0, 20.0],
-                        [2.0, 0.0, 4.0, 1.0],
-                        [0.0],
-                        [0.0],
-                        [2.1415, 1.1415, 3.2, 0.2],
-                        [1.0],
-                        [1.0],
-                        [21.0, 14.0, 27.0, 2.0],
-                        [7.0, 3.0, 12.0, 2.0],
-                        [9.0, 5.0, 15.0, 1.0],
-                        [0.0, 0.0, 3.0, 1.0],
-                        [0.0, 0.0, 1.0, 1.0],
-                        [-99.0, -199.0, 0.0, 50.0]],
-             'shift': 0,
-             'buffers': [5],
-             'class': 'PriceCrossInverted',
-             'filename': 'plombiers-indicator',
-             },
-         8: {'name': 'QWMA_baseline',
-             'inputs': [[0.0, 5.0, 19.0, 2.0],
-                        [25.0, 15.0, 35.0, 2.0],
-                        [2.0, 0.0, 10.0, 0.5],
-                        [0.0, 0.0, 21.0, 1.0],
-                        [0.0, -1.0, 1.0, 1.0],
-                        [3.0],
-                        [25.0, 15.0, 35.0, 2.0],
-                        [90.0, 75.0, 95.0, 5.0],
-                        [10.0, 5.0, 25.0, 5.0]],
-             'shift': 0,
-             'buffers': [4],
-             'class': 'PriceCross',
-             'filename': 'QWMA_ca',
-             },
-         9: {'name': 'YMA',
-             'inputs': [[21.0, 9.0, 35.0, 2.0], [-1.0]],
-             'shift': 0,
-             'buffers': [0],
-             'class': 'PriceCross',
-             'filename': 'YGMA',
-             }}
-
 
 def test_init():
     config = run_config
@@ -132,7 +43,69 @@ def test_init():
     assert r
 
 
-def test_init():
-    config = run_config
-    r = Run(config, {"Confirm": indis[1], "Baseline": indis[2]})
-    assert r
+def test_to_dict():
+    from pprint import pprint
+    s = {"Confirm": indis[1], "Baseline": indis[2]}
+    r = Run(run_config, s)
+    pprint(r._to_dict())
+    assert r._to_dict() == {**run_config, "indi_set":  s}
+
+
+def test_to_json():
+    from pprint import pprint
+    s = {"Confirm": indis[1], "Baseline": indis[5]}
+    r = Run(run_config, s)
+    pprint(r._to_json())
+
+
+@pytest.mark.skip(reason="testing remote API -> takes ages")
+def describe_call_backtestd():
+    @pytest.fixture
+    def run():
+        return Run(run_config, {"Confirm":
+                                {'name': 'ash',
+                                 'inputs': [[9.0], [2.0], [0.0], [0.0], [0.0]],
+                                 'shift': 0,
+                                 'buffers': [0],
+                                 'class': 'ZeroLineCross',
+                                 'filename': 'ASH'},
+                                })
+
+    @pytest.fixture
+    def remote_url():
+        return "http://192.168.12.61:12311"
+
+    def with_good_run(run, remote_url):
+        ret = run._call_backtestd(remote_url)
+        assert ret == ['reports\\bt_run_EURUSD.csv']
+
+    # @pytest.mark.skip(reason="testing remote API -> takes ages")
+    def with_bad_run(run, remote_url):
+        run.optimize = 8
+        with pytest.raises(ValueError):
+            run._call_backtestd(remote_url)
+
+
+def describe_construct_csv_paths():
+    from pathlib import Path
+    from backtestd.run import construct_accessible_csv_paths
+
+    mounted_workdir = Path("/mnt/workdir")
+
+    def with_windows_paths():
+        csv_results = ['reports\\bt_run_EURUSD.csv', 'reports\\bt_run_USDCHF.csv']
+        assert (construct_accessible_csv_paths(mounted_workdir, csv_results) ==
+                [Path('/mnt/workdir/reports/bt_run_EURUSD.csv'),
+                 Path('/mnt/workdir/reports/bt_run_USDCHF.csv')]
+                )
+
+    def with_unix_paths():
+        csv_results = ['reports/bt_run_EURUSD.csv', 'reports/bt_run_USDCHF.csv']
+        assert (construct_accessible_csv_paths(mounted_workdir, csv_results) ==
+                [Path('/mnt/workdir/reports/bt_run_EURUSD.csv'),
+                 Path('/mnt/workdir/reports/bt_run_USDCHF.csv')]
+                )
+
+    def with_empty():
+        csv_results = []
+        assert (construct_accessible_csv_paths(mounted_workdir, csv_results) == [])
