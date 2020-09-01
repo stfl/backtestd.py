@@ -49,3 +49,14 @@ signal_class = (
     'SlopeChange',  # 15,
     'TwoLinesSlopeChange',  # 16,
     )
+
+funcs = ('Confirm',
+         'Confirm2',
+         'Confirm3',
+         'Baseline',
+         'Volume',
+         'Exit',
+         'Continue'
+         )
+
+funcs_short = ('C1', 'C2', 'C3', 'B', 'V', 'E', 'Ct')

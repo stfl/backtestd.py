@@ -44,18 +44,16 @@ def test_init():
 
 
 def test_to_dict():
-    from pprint import pprint
     s = {"Confirm": indis[1], "Baseline": indis[2]}
     r = Run(run_config, s)
-    pprint(r._to_dict())
-    assert r._to_dict() == {**run_config, "indi_set":  s}
+    assert r.to_dict() == {**run_config, "indi_set":  s}
 
 
 def test_to_json():
     from pprint import pprint
     s = {"Confirm": indis[1], "Baseline": indis[5]}
     r = Run(run_config, s)
-    pprint(r._to_json())
+    pprint(r.to_json())
 
 
 @pytest.mark.skip(reason="testing remote API -> takes ages")
@@ -86,26 +84,34 @@ def describe_call_backtestd():
             run._call_backtestd(remote_url)
 
 
-def describe_construct_csv_paths():
-    from pathlib import Path
-    from backtestd.run import construct_accessible_csv_paths
+# def describe_construct_csv_paths():
+#     from pathlib import Path
+#     from backtestd.run import __construct_accessible_csv_paths
 
-    mounted_workdir = Path("/mnt/workdir")
+#     @pytest.fixture
+#     def workdir():
+#         return Path("/mnt/workdir")
+#     # workdir = Path("/mnt/workdir")
 
-    def with_windows_paths():
-        csv_results = ['reports\\bt_run_EURUSD.csv', 'reports\\bt_run_USDCHF.csv']
-        assert (construct_accessible_csv_paths(mounted_workdir, csv_results) ==
-                [Path('/mnt/workdir/reports/bt_run_EURUSD.csv'),
-                 Path('/mnt/workdir/reports/bt_run_USDCHF.csv')]
-                )
+#     def with_windows_paths(workdir):
+#         csv_results = ['reports\\bt_run_EURUSD.csv', 'reports\\bt_run_USDCHF.csv']
+#         assert (__construct_accessible_csv_paths(workdir, csv_results) ==
+#                 [Path('/mnt/workdir/reports/bt_run_EURUSD.csv'),
+#                  Path('/mnt/workdir/reports/bt_run_USDCHF.csv')]
+#                 )
 
-    def with_unix_paths():
-        csv_results = ['reports/bt_run_EURUSD.csv', 'reports/bt_run_USDCHF.csv']
-        assert (construct_accessible_csv_paths(mounted_workdir, csv_results) ==
-                [Path('/mnt/workdir/reports/bt_run_EURUSD.csv'),
-                 Path('/mnt/workdir/reports/bt_run_USDCHF.csv')]
-                )
+#     def with_nested_windows_paths(workdir):
+#         csv_results = ['path\\reports\\bt_run_USDCHF.csv']
+#         assert (__construct_accessible_csv_paths(workdir, csv_results) ==
+#                 [Path('/mnt/workdir/path/reports/bt_run_USDCHF.csv')]
+#                 )
 
-    def with_empty():
-        csv_results = []
-        assert (construct_accessible_csv_paths(mounted_workdir, csv_results) == [])
+#     def with_unix_paths(workdir):
+#         csv_results = ['reports/bt_run_EURUSD.csv', 'reports/bt_run_USDCHF.csv']
+#         assert (__construct_accessible_csv_paths(workdir, csv_results) ==
+#                 [Path('/mnt/workdir/reports/bt_run_EURUSD.csv'),
+#                  Path('/mnt/workdir/reports/bt_run_USDCHF.csv')]
+#                 )
+
+#     def with_empty():
+#         assert (__construct_accessible_csv_paths(workdir, []) == [])
