@@ -8,23 +8,50 @@ from datetime import datetime
 from backtestd.tests.test_indicator import test_indis as indis
 
 
-run_config = {'backtest_model': backtest_model.index('OpenPrice'),
-              'date': [datetime(2018, 1, 1, 0, 0),
-                       datetime(2019, 1, 1, 0, 0)],
-              'name': 'bt_run',
-              'optimize':      optimize.index('Complete'),
-              'optimize_crit': optimize_crit.index('Custom'),
-              'symbols': ['EURUSD'],
-              'visual': False,
-              'store_results': store_results.index('None')
-              }
+run_config = {
+    'backtest_model': backtest_model.index('OpenPrice'),
+    'date': [datetime(2018, 1, 1, 0, 0), datetime(2019, 1, 1, 0, 0)],
+    'name': 'bt_run',
+    'optimize': optimize.index('Complete'),
+    'optimize_crit': optimize_crit.index('Custom'),
+    'symbols': ['EURUSD'],
+    'visual': False,
+    'store_results': store_results.index('None'),
+}
 
 
-all_symbols = ['EURUSD', 'AUDCAD', 'GBPUSD', 'USDCHF', 'USDJPY', 'USDCAD',
-               'AUDUSD', 'EURCHF', 'EURJPY', 'EURGBP', 'EURCAD', 'GBPCHF',
-               'GBPJPY', 'AUDJPY', 'AUDNZD', 'AUDCHF', 'CHFJPY', 'EURAUD',
-               'EURNZD', 'CADCHF', 'GBPAUD', 'GBPCAD', 'GBPNZD', 'NZDCAD',
-               'NZDCHF', 'NZDJPY', 'NZDUSD', 'CADJPY'],
+all_symbols = (
+    [
+        'EURUSD',
+        'AUDCAD',
+        'GBPUSD',
+        'USDCHF',
+        'USDJPY',
+        'USDCAD',
+        'AUDUSD',
+        'EURCHF',
+        'EURJPY',
+        'EURGBP',
+        'EURCAD',
+        'GBPCHF',
+        'GBPJPY',
+        'AUDJPY',
+        'AUDNZD',
+        'AUDCHF',
+        'CHFJPY',
+        'EURAUD',
+        'EURNZD',
+        'CADCHF',
+        'GBPAUD',
+        'GBPCAD',
+        'GBPNZD',
+        'NZDCAD',
+        'NZDCHF',
+        'NZDJPY',
+        'NZDUSD',
+        'CADJPY',
+    ],
+)
 
 # pub struct Indicator {
 #     pub name: String,
@@ -36,23 +63,41 @@ all_symbols = ['EURUSD', 'AUDCAD', 'GBPUSD', 'USDCHF', 'USDJPY', 'USDCAD',
 #     pub shift: u8,
 # }
 
+# def describe_init():
+#     @pytest.fixture
+#     def run():
 
-def test_init():
+
+def test_with_config():
     config = run_config
-    r = Run(config, {"Confirm": indis[1], "Baseline": indis[2]})
-    assert r
+    # reeint config to make sure __eq__() works
+    config2 = {
+        'backtest_model': backtest_model.index('OpenPrice'),
+        'date': [datetime(2018, 1, 1, 0, 0), datetime(2019, 1, 1, 0, 0)],
+        'name': 'bt_run',
+        'optimize': optimize.index('Complete'),
+        'optimize_crit': optimize_crit.index('Custom'),
+        'symbols': ['EURUSD'],
+        'visual': False,
+        'store_results': store_results.index('None'),
+    }
+    s = {"Confirm": indis[1], "Baseline": indis[2]}
+    r = Run.from_config(s, config)
+    r2 = Run(s, **config2)
+    assert r == r2
 
 
 def test_to_dict():
     s = {"Confirm": indis[1], "Baseline": indis[2]}
-    r = Run(run_config, s)
-    assert r.to_dict() == {**run_config, "indi_set":  s}
+    r = Run.from_config(s, run_config)
+    assert r.to_dict() == {**run_config, "indi_set": s}
 
 
 def test_to_json():
     from pprint import pprint
+
     s = {"Confirm": indis[1], "Baseline": indis[5]}
-    r = Run(run_config, s)
+    r = Run.from_config(s, run_config)
     pprint(r.to_json())
 
 
@@ -60,14 +105,19 @@ def test_to_json():
 def describe_call_backtestd():
     @pytest.fixture
     def run():
-        return Run(run_config, {"Confirm":
-                                {'name': 'ash',
-                                 'inputs': [[9.0], [2.0], [0.0], [0.0], [0.0]],
-                                 'shift': 0,
-                                 'buffers': [0],
-                                 'class': 'ZeroLineCross',
-                                 'filename': 'ASH'},
-                                })
+        return Run.from_config(
+            run_config,
+            {
+                "Confirm": {
+                    'name': 'ash',
+                    'inputs': [[9.0], [2.0], [0.0], [0.0], [0.0]],
+                    'shift': 0,
+                    'buffers': [0],
+                    'class': 'ZeroLineCross',
+                    'filename': 'ASH',
+                },
+            },
+        )
 
     @pytest.fixture
     def remote_url():
@@ -79,7 +129,7 @@ def describe_call_backtestd():
 
     # @pytest.mark.skip(reason="testing remote API -> takes ages")
     def with_bad_run(run, remote_url):
-        run.optimize = 8
+        run.optimize = -1
         with pytest.raises(ValueError):
             run._call_backtestd(remote_url)
 

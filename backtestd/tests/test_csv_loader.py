@@ -2,6 +2,7 @@
 # pylint: disable=redefined-outer-name,unused-variable,expression-not-assigned,singleton-comparison
 
 # import pytest
+import pandas as pd
 
 from backtestd.csv_loader import (
     load_csv_results,
@@ -10,6 +11,7 @@ from backtestd.csv_loader import (
 
 def test_load_csv_results():
     res = load_csv_results('backtestd/tests/files/ash_EURUSD.csv')
+    assert isinstance(res, pd.DataFrame)
     assert len(res) == 10472
 
 
@@ -17,6 +19,7 @@ def describe_merge_csv_results():
     def with_single_file():
         res_list = [load_csv_results('backtestd/tests/files/ash_EURUSD.csv')]
         merged = merge_csv_results(res_list)
+        assert isinstance(merged, pd.DataFrame)
         assert "HitMiss" in merged
         assert len(merged) == 10472
 
@@ -24,5 +27,6 @@ def describe_merge_csv_results():
         res_list = [load_csv_results('backtestd/tests/files/ash_EURUSD.csv'),
                     load_csv_results('backtestd/tests/files/ash_AUDCAD.csv')]
         merged = merge_csv_results(res_list)
+        assert isinstance(merged, pd.DataFrame)
         assert "HitMiss" in merged
         assert len(merged) == 10472
